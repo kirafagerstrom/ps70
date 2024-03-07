@@ -85,13 +85,6 @@ I followed the tutorial on the class website and used CapacitiveSensor library e
 This was a good idea in theory but in practice it was a flop. When it came time to calibrate, adding pills to the sensor didn't change the Arduino reading. I thought this might be because I was using a 1 M ohm resistor, so I tried 3 and 10 M ohms to make it more sensitive. 3 M ohms still wasn't sensitive enough, but 10 M ohms was a bit too sensitive and the readings were affected by surrounding objects (mostly by me). I think the capacitance between the pills and the sensor was too small because of their small size (less surface area touching the capacitor) and their dielectric constant may be too low. My next attempt will be a transmit-receive weight sensor that will hopefully be able to sense the small changes in plate position caused by adding more tablets. I think using a thin but flexible dielectric between the two foil sheets will be more sensitive and easier to calibrate, but I'll try a variety of materials/thicknesses.
 
 
-<p class="margin">   </p>
-<div class="flexrow">
-  <img src="./rotary_led.jpeg" alt="same circuit as above, but with an additional LED">
-  <img src="./led_demo.gif" alt="a gif animation of the LED getting brighter and dimmer as the arms move">
-</div>
-<p class="caption">The version of the circuit with the added LED indicator.</p>
-
 </div>
 </xmp>
 </body>
