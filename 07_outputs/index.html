@@ -28,15 +28,16 @@
 <h4>Assignment: Minimum Viable Product for Final Project</h4>
 
 The pillbox idea has 2 main components: the actual box itself, which I'll probably 3D print, and the electronic input/output electronics. The 3D printing and Fusion designing will be pretty straightforward, so this week I decided to try out a super basic input/output circuit, since I anticipate the Arduino programming to be the most challenging part of this project.<br>
-<h6><em>Outputs</em></h6>
+<br>
+<h6><em>outputs</em></h6>
 
 I started with an Arduino-based circut on the breadboard to control 7 LEDs (one for each day of the week), with the idea of expanding to 14 LEDs in my later ESP32 powered iterations (I was already almost out of digital pins on the Arduino with this version). The lights would turn on according to the frequency defined in the input.<br>
-
-<h6><em>Inputs</em></h6>
+<br>
+<h6><em>inputs</em></h6>
 I'm starting very small with just 3 options for dose frequencies: everyday, every other day, and twice a week. Each option has a corresponding button. I don't think the final version will be button-based for input because it really limits the type of prescription regimens that you can input into the device, so Kassia suggested I try FireBase to store information about the user's exisitng regimens, allowing greater input options. To test that I could actually do the coding to make sure the lights turned on in multiple different ways, I stuck with the buttons for now. I added another button to reset/turn off the lights when the user is done filling one prescription. Eventually I want to use the capacitive pressure sensor or photoresistor inside each compartment to sense when pills are put in it and turn off the LED, but I'm still troubleshooting that and working on how to make the capacitive sensor sensitive enough.
 <p class="margin">   </p>
 <h6><em>Circuit and Code</em></h6>
-Here is the circuit as I built it, and a TinkerCad illustration to clearly show the connections:
+Here is the circuit as I built it, and a TinkerCad illustration to clearly show the connections (resistors are 10 kOhms):
 <p class="margin">   </p>
 <div class="flexrow">
   <img src="./breadboard.jpeg" alt="breadboard with 7 LEDs and 4 buttons connected to an Arduino" width="45%">
@@ -44,110 +45,10 @@ Here is the circuit as I built it, and a TinkerCad illustration to clearly show 
 </div>
   <br>
 
-And here is the annotated code I came to after much troubleshooting and learning about toggle and i in Arduino.
+And here is the annotated code I came to after much troubleshooting and learning about toggle and i in Arduino, and some chatgpt debugging help. Learning Arduino code is a highly recommended spring break activity. <br>
+Some helpful sources: <a href="https://www.arduino.cc/reference/en/libraries/toggle/">Arduino toggle library</a>, <a href="https://forum.arduino.cc/t/use-a-push-button-as-a-toggle-switch/486589">Arduino forum</a>, <a href="https://forum.arduino.cc/t/how-to-toggle-led/508015/5">this Arduino forum</a>, <a href="https://forum.arduino.cc/t/creating-class-and-objects/997333">and the class and objects forum on Arduino</a>.
 
-
-<pre><code>
-// making a pillbox class
-class Pillbox {
-  private:
-    const int* ledPins; // Pointer to an array of LED pins
-    bool* ledState; // Pointer to an array of LED states
-    unsigned long previousMillis; // Variable storing previous time
-    const long interval; // Interval for LED toggle (1 second)
-
-  public:
-    Pillbox(const int* pins, bool* states, long interval) 
-      : ledPins(pins), ledState(states), interval(interval) {
-    }
-
-    void setup() {
-      for (int i = 0; i < 7; i++) {
-        pinMode(ledPins[i], OUTPUT);
-        digitalWrite(ledPins[i], LOW); // turn off all LEDs on start up
-      }
-      previousMillis = 0; // initialize previousMillis
-    }
-
-    void toggleLEDs(int frequency) {
-      unsigned long currentMillis = millis(); // get current time
-      if (currentMillis - previousMillis >= interval) {
-        previousMillis = currentMillis; // store last time the LEDs were toggled
-
-        // toggle LED state for the selected day frequency
-        for (int i = 0; i < 7; i++) {
-          if ((i % frequency) == 0) {
-            ledState[i] = !ledState[i]; // toggle LED state
-            digitalWrite(ledPins[i], ledState[i] ? HIGH : LOW); // turn LED on or off
-          }
-        }
-      }
-    }
-
-    void toggleTwiceAWeekLEDs() {
-      unsigned long currentMillis = millis(); // Get the current time
-      if (currentMillis - previousMillis >= interval) {
-        previousMillis = currentMillis; // store last time LEDs were toggled
-
-        // specify twice per week LEDs
-        ledState[0] = !ledState[0]; // sunday LED
-        ledState[3] = !ledState[3]; // wednesday LED
-
-        // Turn on or off the LEDs for twice a week regimen
-        digitalWrite(ledPins[0], ledState[0] ? HIGH : LOW); // Monday LED
-        digitalWrite(ledPins[3], ledState[3] ? HIGH : LOW); // Thursday LED
-      }
-    }
-
-    void turnOffLEDs() {
-      for (int i = 0; i < 7; i++) {
-        digitalWrite(ledPins[i], LOW); // Turn off all LEDs
-        ledState[i] = false; // Reset LED state
-      }
-    }
-};
-
-const int ledPins[] = {2, 3, 4, 5, 6, 7, 8}; // LED pins
-bool ledState[7] = {false}; // array to track LED state for each compartment
-
-Pillbox pillbox(ledPins, ledState, 1000); // Create an instance of the Pillbox class
-
-const int buttonEverydayPin = 9; // Pin connected to the everyday button
-const int buttonEveryOtherDayPin = 10; // Pin connected to the every other day button
-const int buttonTwiceAWeekPin = 11; // Pin connected to the twice a week button
-const int buttonTurnOffPin = 12; // Pin connected to the button to turn off lights
-
-void setup() {
-  pinMode(buttonEverydayPin, INPUT_PULLUP); // Set the button pins as input with internal pull-up resistors
-  pinMode(buttonEveryOtherDayPin, INPUT_PULLUP);
-  pinMode(buttonTwiceAWeekPin, INPUT_PULLUP);
-  pinMode(buttonTurnOffPin, INPUT_PULLUP);
-
-  pillbox.setup(); // Initialize the pillbox
-}
-
-void loop() {
-  // Check if everyday button is pressed
-  if (digitalRead(buttonEverydayPin) == LOW) {
-    pillbox.toggleLEDs(1); // Toggle LEDs for everyday button
-
-  // Check if every other day button is pressed
-  if (digitalRead(buttonEveryOtherDayPin) == LOW) {
-    pillbox.toggleLEDs(2); // Toggle LEDs for every other day button
-  
-  }
-
-  // Check if twice a week button is pressed
-  if (digitalRead(buttonTwiceAWeekPin) == LOW) {
-    pillbox.toggleTwiceAWeekLEDs(); // Toggle LEDs for twice a week button
-  }
-
-  // check if off/reset button is pressed
-  if (digitalRead(buttonTurnOffPin) == LOW) {
-    pillbox.turnOffLEDs(); // turn off all LEDs
-  }
-}
-</code></pre>
+<iframe src=https://create.arduino.cc/editor/kfagerstrom/5158ec5c-90a0-4386-a4ba-6850a54af3fe/preview?embed style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
 
 It worked! Here's a live demo:<br>
 <div class="flexrow">
@@ -164,6 +65,25 @@ This was great except it was pretty much just some LEDs and I needed a pillbox. 
   </video>
 </div>
 
+It was super helpful to put everything on the protoboard so I can have an idea of how to design the box around the electronics in Fusion. 
+
+<h6><em>the vision</em></h6>
+The vision is coming together, but there are many next steps to be taken. Next week for Wifi and Bluetooth I'll work on the advanced input versions, and I already found a couple tutorials on using an html website to control an Arduino. After or simultaneously with putting that together, I'll try integrating the ESP32 because I'll definitely need more than the Arduino's 13 digital pins. Using the capacitive sensor to sense pill presence seems like it will be the last part because it goes a little bit beyond the basic functionality of the pillbox. But the vision is always changing so we'll see what I'm thinking next week.
+
+<h6><em>oscilloscope</em></h6>
+The oscilloscope readings turned out to be very boring when I hooked it up the LEDs and buttons because all they were doing was turning on and off. But i got a reading of the on and off voltages shown below, and it was cool to zoom in on the wave at the exact moment of turning on and off:
+<div class="flexrow">
+<video width="50%" autoplay muted>
+  <source src="oscilloscope.MOV" type="video/mp4">
+  </video>
+</div>
+
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="./oscilloscope.jpeg" alt="picture of oscilloscope reading voltage" width="45%">
+</div>
+<p class="caption">oscilloscope reading at the moment the button was turned on, with the off voltage jumping up to the on voltage</p>
+I think this will be much more informative with the capacitive sensor/pill sensors because the circuit will have a lot more complexity. And the variable input may have a cooler wave function.
 </div>
 </xmp>
 </body>
