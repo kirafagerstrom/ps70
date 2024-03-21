@@ -23,192 +23,146 @@
 <xmp style="display:none;">
 <div class="textcontainer">
 <p class="margin">   </p>
-
-<h3>Week 1: Final Project Proposal</h3>
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <a id="btn" href="wk7.zip" download>Download my files from this week!
-  </a>
-</div>
-<p class="margin">   </p>
+<h3>Week 7: Output Devices</h3>
 
 <h4>Assignment: Minimum Viable Product for Final Project</h4>
 
-As a reminder, the pieces that were to make up my final project consisted of:
+The pillbox idea has 2 main components: the actual box itself, which I'll probably 3D print, and the electronic input/output electronics. The 3D printing and Fusion designing will be pretty straightforward, so this week I decided to try out a super basic input/output circuit, since I anticipate the Arduino programming to be the most challenging part of this project.<br>
+<h6><em>Outputs</em></h6>
 
-1. An electronic circuit wiring up macro keys and a program key to an Arduino
-2. An interface between the Arduino and a computer that would allow the Arduino to
-send and recieve sequences of key presses
-3. Coding functionality to be able to assign key sequences to the various macro keys,
-using the program key
-4. An enclosure / housing to contain all the electronics, with a port to connect to
-a computer (or, optionally, Bluetooth / wireless functionality)
-5. Ideally, two rotary encoders for non-binary inputs
-6. Ideally, an LCD / OLED screen to display macro outputs for debugging etc.
-7. Ideally, a toggle switch to choose between separate profiles for the keys.
+I started with an Arduino-based circut on the breadboard to control 7 LEDs (one for each day of the week), with the idea of expanding to 14 LEDs in my later ESP32 powered iterations (I was already almost out of digital pins on the Arduino with this version). The lights would turn on according to the frequency defined in the input.<br>
 
-For my MVP, I wanted to tackle items 1 and 3 of this list: figuring out the code
-functionality that would allow me to program the macro keys. Since I didn't yet
-know how to get key presses from a connected computer, I decided to make dummy buttons
-in my Arduino circuit to treat like keyboard keys. Each button was connected to one
-channel of an RGB LED, such that I had a red button, a green button, and a blue button.
-The buttons were connected to ground on one side and Arduino digital pins on the other,
-which were set to `INPUT_PULLUP` mode so I could check when the buttons were pressed.
-I added two more buttons to be my program key and a single macro button, then
-started working on the code.
-
-<pre><code style="background-color: #2d2b33;">
-  // pins to read input buttons
-  int r_button = 10;
-  int g_button = 11;
-  int b_button = 12;
-  
-  // pins to control LED
-  int r_out = 5;
-  int g_out = 6;
-  int b_out = 7;
-
-  ...
-
-  // in setup function:
-  pinMode(r_button, INPUT_PULLUP);
-  pinMode(g_button, INPUT_PULLUP);
-  pinMode(b_button, INPUT_PULLUP);
-
-  ...
-
-  // in loop function:
-  // if any input buttons pressed, light up with LED
-  // with the appropriate color
-  if (digitalRead(r_button) < 1) {
-    digitalWrite(r_out, HIGH);
-  } else {
-    digitalWrite(r_out, LOW);
-  }
-  if (digitalRead(g_button) < 1) {
-    digitalWrite(g_out, HIGH);
-  } else {
-    digitalWrite(g_out, LOW);
-  }
-  if (digitalRead(b_button) < 1) {
-    digitalWrite(b_out, HIGH);
-  } else {
-    digitalWrite(b_out, LOW);
-  }
-</code></pre>
-
+<h6><em>Inputs</em></h6>
+I'm starting very small with just 3 options for dose frequencies: everyday, every other day, and twice a week. Each option has a corresponding button. I don't think the final version will be button-based for input because it really limits the type of prescription regimens that you can input into the device, so Kassia suggested I try FireBase to store information about the user's exisitng regimens, allowing greater input options. To test that I could actually do the coding to make sure the lights turned on in multiple different ways, I stuck with the buttons for now. I added another button to reset/turn off the lights when the user is done filling one prescription. Eventually I want to use the capacitive pressure sensor or photoresistor inside each compartment to sense when pills are put in it and turn off the LED, but I'm still troubleshooting that and working on how to make the capacitive sensor sensitive enough.
+<p class="margin">   </p>
+<h6><em>Circuit and Code</em></h6>
+Here is the circuit as I built it, and a TinkerCad illustration to clearly show the connections:
 <p class="margin">   </p>
 <div class="flexrow">
-  <img src="mvp1.jpeg" alt="an Arduino and breadboard wired up with multiple buttons, resistors, and an LED">
-  <img src="mvp2.jpeg" alt="another angle of the same circuit">
+  <img src="./breadboard.jpeg" alt="breadboard with 7 LEDs and 4 buttons connected to an Arduino" width="45%">
+  <img src="./tinkercadss.png" alt="illustration of breadboard with 7 LEDs and 4 buttons connected to an Arduino" width="45%">
 </div>
-<p class="caption">The completed MVP circuit. I color-coded my wires to match the appropriate
-  color channels of the LED.
-</p>
+  <br>
 
-I knew I wanted to define a `MacroButton` class to hold the functionality of the macro
-keys (checking whether they've been pressed, storing their macro sequences, running
-their macro sequences, etc.), so I defined that class first. I had to go back to the
-documentation and check a lot of the syntax for programming in C++, especially since
-I'm used to languages with variable-length lists instead of fixed arrays. Because
-I had to use fixed arrays to hold the macros, I decided to cap the macro sequence
-lengths at 20 key presses, although that value might get raised later.
+And here is the annotated code I came to after much troubleshooting and learning about toggle and i in Arduino.
 
-In the `loop` function, I added logic to trigger a while loop when the program button
-was pressed, so that the Arduino would start listening to and recording key presses
-until the program key was pressed again. I also had to add logic to check which macro
-key was being programmed. Then, I added a loop to call the `run` method of any
-macro buttons that had been pressed. (Even though I only had one macro button at this
-point, I was programming everything as if I had several macro keys stored in an array,
-for ease of adding additional buttons later.)
 
-<pre><code style="background-color: #2d2b33;">
-  // define a class for our macro buttons
-  class MacroButton{
-  
-    // declare private variables for this class
-    private:
-    int pin; // the control pin to see if this button has been pressed
-    int macro[20]; // the macro sequence
-    int macro_len = 0; // the length of the macro sequence
-  
-    // constructor
-    public:
-    MacroButton(int read_pin){
-      pin = read_pin;
-      pinMode(pin, INPUT_PULLUP);
+<pre><code>
+// making a pillbox class
+class Pillbox {
+  private:
+    const int* ledPins; // Pointer to an array of LED pins
+    bool* ledState; // Pointer to an array of LED states
+    unsigned long previousMillis; // Variable storing previous time
+    const long interval; // Interval for LED toggle (1 second)
+
+  public:
+    Pillbox(const int* pins, bool* states, long interval) 
+      : ledPins(pins), ledState(states), interval(interval) {
     }
-  
-    // bool isPressed(): checks if this button has been pressed.
-    // returns "true" if pressed and "false" otherwise
-    bool isPressed(){
-      ...
-    };
-  
-    // int assign(): takes a sequence of pin values and a sequence length
-    // and saves them to this macro button. Returns the macro sequence
-    // for error checking
-    int assign(int sequence[], int len) {
-      ...
-    };
-  
-    // int get_len(): returns the length of this button's macro sequence
-    int get_len() {
-      return macro_len;
-    };
-  
-    // int get_macro(): returns this button's macro sequence
-    int get_macro() {
-      return macro;
-    };
-  
-    // void run(): loops through the pin values in this button's macro
-    // sequence and one-by-one sets them to "HIGH"
-    void run() {
-      ...
-    };
-  };
 
-  ...
+    void setup() {
+      for (int i = 0; i < 7; i++) {
+        pinMode(ledPins[i], OUTPUT);
+        digitalWrite(ledPins[i], LOW); // turn off all LEDs on start up
+      }
+      previousMillis = 0; // initialize previousMillis
+    }
 
-  // in the loop function:
-  // check if any macro buttons have been triggered
-    for (int i = 0; i < num_macros; i++) {
-      if (macro_buttons[i].isPressed()) {
-        Serial.print("run macro ");
-        Serial.println(i);
-        macro_buttons[i].run();
+    void toggleLEDs(int frequency) {
+      unsigned long currentMillis = millis(); // get current time
+      if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis; // store last time the LEDs were toggled
+
+        // toggle LED state for the selected day frequency
+        for (int i = 0; i < 7; i++) {
+          if ((i % frequency) == 0) {
+            ledState[i] = !ledState[i]; // toggle LED state
+            digitalWrite(ledPins[i], ledState[i] ? HIGH : LOW); // turn LED on or off
+          }
+        }
       }
     }
+
+    void toggleTwiceAWeekLEDs() {
+      unsigned long currentMillis = millis(); // Get the current time
+      if (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis; // store last time LEDs were toggled
+
+        // specify twice per week LEDs
+        ledState[0] = !ledState[0]; // sunday LED
+        ledState[3] = !ledState[3]; // wednesday LED
+
+        // Turn on or off the LEDs for twice a week regimen
+        digitalWrite(ledPins[0], ledState[0] ? HIGH : LOW); // Monday LED
+        digitalWrite(ledPins[3], ledState[3] ? HIGH : LOW); // Thursday LED
+      }
+    }
+
+    void turnOffLEDs() {
+      for (int i = 0; i < 7; i++) {
+        digitalWrite(ledPins[i], LOW); // Turn off all LEDs
+        ledState[i] = false; // Reset LED state
+      }
+    }
+};
+
+const int ledPins[] = {2, 3, 4, 5, 6, 7, 8}; // LED pins
+bool ledState[7] = {false}; // array to track LED state for each compartment
+
+Pillbox pillbox(ledPins, ledState, 1000); // Create an instance of the Pillbox class
+
+const int buttonEverydayPin = 9; // Pin connected to the everyday button
+const int buttonEveryOtherDayPin = 10; // Pin connected to the every other day button
+const int buttonTwiceAWeekPin = 11; // Pin connected to the twice a week button
+const int buttonTurnOffPin = 12; // Pin connected to the button to turn off lights
+
+void setup() {
+  pinMode(buttonEverydayPin, INPUT_PULLUP); // Set the button pins as input with internal pull-up resistors
+  pinMode(buttonEveryOtherDayPin, INPUT_PULLUP);
+  pinMode(buttonTwiceAWeekPin, INPUT_PULLUP);
+  pinMode(buttonTurnOffPin, INPUT_PULLUP);
+
+  pillbox.setup(); // Initialize the pillbox
+}
+
+void loop() {
+  // Check if everyday button is pressed
+  if (digitalRead(buttonEverydayPin) == LOW) {
+    pillbox.toggleLEDs(1); // Toggle LEDs for everyday button
+
+  // Check if every other day button is pressed
+  if (digitalRead(buttonEveryOtherDayPin) == LOW) {
+    pillbox.toggleLEDs(2); // Toggle LEDs for every other day button
+  
+  }
+
+  // Check if twice a week button is pressed
+  if (digitalRead(buttonTwiceAWeekPin) == LOW) {
+    pillbox.toggleTwiceAWeekLEDs(); // Toggle LEDs for twice a week button
+  }
+
+  // check if off/reset button is pressed
+  if (digitalRead(buttonTurnOffPin) == LOW) {
+    pillbox.turnOffLEDs(); // turn off all LEDs
+  }
+}
 </code></pre>
 
-At this point, with most of the basic logic implemented, I started to run into problems.
-
-First, I figured out that the high clock speeds on the Arduino meant I had
-to separate code out into separate functions and add `delay` commands to make sure
-the Arduino would actually wait for key presses before continuing, and that key
-presses would only register once instead of multiple times.
-
-I also realized that the macro sequences weren't being properly assigned to the
-macro keys. This was a tricky issue to figure out, but Bobby helped me eventually
-discover that when I was passing the macro key to be programmed into the function
-that would program it, the program was essentially passing a *copy* of the button
-instead of the button itself, and so the sequence wasn't being saved. We fixed this
-by adding an ampersand in the input definition of the programming function so that
-it would edit the actual button that was passed in.
-
-With that, the keyboard started working as expected! The complete final code, with
-explanatory comments, can be downloaded at the top of this page. Here's a video of
-the macro functionality, using the RGB LED:
-
-<p class="margin">   </p>
+It worked! Here's a live demo:<br>
 <div class="flexrow">
-  <video controls>
-    <source src="./mvp_demo.mov" type="video/mp4">
+<video width="50%" autoplay muted>
+  <source src="mvpv1.MOV" type="video/mp4">
   </video>
-  </div>
-<p class="caption">The working MVP!</p>
+</div>
+
+This was great except it was pretty much just some LEDs and I needed a pillbox. So I transferred everything to a protoboard along with a 7-day pillbox (that CVS made). It's starting to look and work like (a very rudimentary version) of the real thing!<br>
+
+<div class="flexrow">
+<video width="50%" autoplay muted>
+  <source src="mvpv2.MOV" type="video/mp4">
+  </video>
+</div>
 
 </div>
 </xmp>
