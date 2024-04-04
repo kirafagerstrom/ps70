@@ -20,82 +20,316 @@
 </nav>
 
 <body>
-<xmp style="display:none;">
+<xmp style="display:block;">
 <div class="textcontainer">
 <p class="margin">   </p>
 
 <h3>Week 9: Radio, WiFi, Bluetooth (IoT)</h3>
+<br>
 
+<h4>Assignment: Microcontroller Communication</h4>
+
+This week I worked with <a href="https://chris-rivers.github.io/PS70/09_networking/index.html">Chris</a> and <a href= "https://k-ra.github.io/PS70/about/about.html">Kyra</a> on a Firebase-ESP32 communication device to play Whackamole! Below is our shared documentation copied to each of our websites.<br>
+<br>
+<h4 style="color:#e2165b;">Two-Mole-Whackamole &#169;</h4>
+<br>
+
+For our networking project this week, we decided to make a project using Firebase. The basic idea was to make a rudimentary version of the game Whac-A-Mole, using a circuit with an LED on it. The LED (meant to be the mole) would go on at a random time within a set interval, and then pressing a button on the circuit to turn off the light would get you points based on how long it took you to “whack” the “mole”. Each player’s points would be calculated in Arduino and then sent to a Firebase database, before finally being displayed on an html website. <br>
+<br>
+<h5>Setting up Firebase</h5>
+The first thing we tackled was setting up a remote database for the project using Firebase. We followed this tutorial on RandomNerd to help us with that. It was pretty simple beyond the generic setup because all we needed to store was a score nested in a node for each player. The Arduino IDE code (included in full code below) from the RandomNerd tutorial sent a float and random integer from the ESP to the database every 15 seconds, and we tested our connections/circuit by manually changing database values to see if they were reflected in the Arduino IDE serial monitor. It worked!<br>
+<br>
+<h5>Making a website interface</h5>
+We used <a href=”https://nathanmelenbrink.github.io/ps70/09_networking/index.html”>Nathan’s html code</a> to create an web interface that would display the Whackamole score for each player. We modified the basic setup code slightly to add references to the Player 1 and Player 2 scores in the Firebase RTDB, and event listeners to automatically update scores as the game continues (using the document.getElementById function). Kyra added a super cute pair of moles and formatting.
+
+<div class="box">
+  <pre>
+    <code>
+     &lt;!doctype html&gt;
+&lt;html class=&quot;no-js&quot; lang=&quot;en&quot;&gt;
+&lt;!-- The core Firebase JS SDK is always required and must be listed first --&gt;
+&lt;script src=&quot;https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries --&gt;
+&lt;script src=&quot;https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js&quot;&gt;&lt;/script&gt;
+
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css&quot;
+        integrity=&quot;sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T&quot; crossorigin=&quot;anonymous&quot;&gt;
+    &lt;title&gt;PS70 Networking Whack-a-Mole&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;h1 class=&quot;title&quot;&gt;TWO MOLE WHACK-A-MOLE&lt;/h1&gt;
+    &lt;h1 class=&quot;hedge&quot;&gt;tzo mole bhack a mole&lt;/h1&gt;
+    &lt;div class=&quot;container text-center&quot;&gt;
+        &lt;img src=&quot;moles.png&quot; /&gt;
+        &lt;div class=&quot;row align-items-start&quot;&gt;
+            &lt;div class=&quot;col&quot;&gt;
+                &lt;h1&gt; PLAYER 1 &lt;/h1&gt;
+                &lt;h1 class=&quot;score&quot; id=&quot;Player1&quot; name=&quot;Player1&quot;&gt; &lt;/h1&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col&quot;&gt;
+                &lt;h1&gt; PLAYER 2 &lt;/h1&gt;
+                &lt;h1 class=&quot;score&quot; id=&quot;Player2&quot; name=&quot;Player2&quot;&gt; &lt;/h1&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;h1 class=&quot;hedge&quot;&gt;tzo mole bhack a mole&lt;/h1&gt;
+    &lt;h1 class=&quot;marquee&quot;&gt;&lt;i&gt;PLAY MINDFULLY! WHACK WITH CARE!&lt;/i&gt;&lt;/h1&gt;
+&lt;/body&gt;
+
+
+&lt;script&gt;
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: &quot;AIzaSyDqKrIBQJPREROt6Rud552YL1Ig1bmLvbg&quot;,
+        authDomain: &quot;week-9-assignment.firebaseapp.com&quot;,
+        databaseURL: &quot;https://week-9-assignment-default-rtdb.firebaseio.com&quot;,
+        projectId: &quot;week-9-assignment&quot;,
+        storageBucket: &quot;week-9-assignment.appspot.com&quot;,
+        messagingSenderId: &quot;606426012864&quot;,
+        appId: &quot;1:606426012864:web:8d7c375088cea0702f2125&quot;,
+        measurementId: &quot;G-RW3TZ3MPPC&quot;
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a database reference to our blog
+    var ref = firebase.database().ref(&quot;/&quot;);
+    var player1 = firebase.database().ref().child('/Player 1/SCORE');
+    var player2 = firebase.database().ref().child('/Player 2/SCORE');
+
+    player1.on('value', snap =&gt; {
+        document.getElementById('Player1').innerHTML = snap.val();
+    });
+    player2.on('value', snap =&gt; {
+        document.getElementById('Player2').innerHTML = snap.val();
+    });
+
+&lt;/script&gt;
+
+&lt;style&gt;
+@import url('https://fonts.googleapis.com/css2?family=Micro+5&amp;family=Roboto+Slab:wght@100..900&amp;family=Silkscreen&amp;family=Yarndings+12&amp;display=swap');
+    body {
+        background-color: rgb(184, 233, 184);
+    }
+
+    .marquee {
+        font-family: &quot;Roboto Slab&quot;, serif;
+        font-size: 18pt;
+        color:rgb(115, 173, 99);
+    }
+
+    h1 {
+        font-family: &quot;Silkscreen&quot;, sans-serif;
+        text-align: center;
+        color:#54370a;
+    }
+
+    .hedge {
+        font-family: &quot;Yarndings 12&quot;, system-ui;
+        color: rgb(151, 208, 143);
+        font-size: 50pt;
+    }
+
+    .title {
+        padding: 20px;
+        color: rgb(30, 90, 22);
+    }
+
+    .col {
+        flex: 1;
+        /* This will ensure that each column takes up equal space */
+        padding: 20px;
+        /* Add some padding inside the columns */
+        margin: 40px;
+        /* Add some space between the columns */
+        background-color: #d08b69;
+        /* Example light grey background color */
+        border-radius: 40px;
+        /* Rounded corners with a radius of 10px */
+    }
+
+    .score {
+        font-size: 70pt;
+        font-family: &quot;Micro 5&quot;, sans-serif;
+    }
+
+    img {
+        width: 50%;
+    }
+&lt;/style&gt;
+</code>
+</pre>
+</div> 
+<br>
+<a href="https://k-ra.github.io/twomolewhackamole/">Here is the link to the web interface</a>
+<br>
+<br>
+<h5>Programming the ESP32</h5>
+We ended up with a fairly simple circuit containing 2 buttons, 2 LEDs with one 1kOhm resistor each, and an ESP32 Wroom on a LOLIN32 board.<br>
 
 <p class="margin">   </p>
 <div class="flexrow">
-  <a id="btn" href="wk9.zip" download>Download my files from this week!
-  </a>
-</div>
-<p class="margin">   </p>
+  <img src="circuit.jpeg" alt="circuit with 2 breadboards, buttons, LEDs, and ESP32 Wroom board" width="50%">
+</div><br>
+<br>
+Here are the pin and LED connections to the ESP32 board (pins must have digital write and digital read capacity/both input and output).
+Player 1: Button 1 (pin 33) and LED 1(pin 32)
+Player 2: Button 2 (pin 26) and LED2 (pin 25)
+<br>
+We modified the code from the earlier RandomNerd tutorial so the Firebase configuration is the same, but we added variables for the buttons, LEDs, scores, players, and LEDonTime in the setup, and programmed the game according to the following logic: turn the LEDs on at a random time, record the amount of time between the LED turning on and the button press, and convert that into a score.
+<br>
+<br>
+<em>Arduino code:</em><br>
 
-<h4>Assignment: Program a Microcontroller</h4>
+<pre>
+  <code>
+    #include <Arduino.h>
+#if defined(ESP32)
+  #include <WiFi.h>
+#elif defined(ESP8266)
+  #include <ESP8266WiFi.h>
+#endif
+#include <Firebase_ESP_Client.h>
 
-This week, I worked with Adelaide to program a mincrocontroller over the internet
-using a local LAN website. Our idea was to have a web interface where you could
-tell the microcontroller to play a variety of songs on a connected piezo buzzer.
-Adelaide was becoming an expert at using piezo buzzers with Arduino, because that
-was an important part of her final project, and I focused more on the WiFi logistics.
-Our first task was to set up a basic circuit with an Arduino ESP32 going to
-a piezoelectric buzzer; we just connected the buzzer to ground and to an Arduino pin
-that works for digital output.
+//Provide the token generation process info.
+#include "addons/TokenHelper.h"
+//Provide the RTDB payload printing info and other helper functions.
+#include "addons/RTDBHelper.h"
 
-<p class="margin">   </p>
+// Insert your network credentials but take them out when you put them online
+#define WIFI_SSID "MAKERSPACE"
+#define WIFI_PASSWORD "12345678"
+
+// Insert Firebase project API Key
+#define API_KEY "AIzaSyDqKrIBQJPREROt6Rud552YL1Ig1bmLvbg"
+
+// Insert RTDB URLefine the RTDB URL */
+#define DATABASE_URL "https://week-9-assignment-default-rtdb.firebaseio.com/" 
+
+//Define Firebase Data object
+FirebaseData fbdo;
+
+FirebaseAuth auth;
+FirebaseConfig config;
+
+unsigned long sendDataPrevMillis = 0;
+int intValue;
+float floatValue;
+bool signupOK = false;
+
+const int button2 = 26;
+const int led2 = 25;
+const int button1 = 33;
+const int led1 = 32;
+unsigned long score1 = 0;
+unsigned long score2 = 0;
+unsigned long randomTime; // Generate a random time for the LED turning on
+static unsigned long ledOnTime; // Set the time when the LED should turn on
+String player1 = "Player 1";
+String player2 = "Player 2";
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to Wi-Fi");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(300);
+  }
+  Serial.println();
+  Serial.print("Connected with IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+
+  /* Assign the api key (required) */
+  config.api_key = API_KEY;
+
+  /* Assign the RTDB URL (required) */
+  config.database_url = DATABASE_URL;
+
+  /* Sign up */
+  if (Firebase.signUp(&config, &auth, "", "")) {
+    Serial.println("ok");
+    signupOK = true;
+  }
+  else {
+    Serial.printf("%s\n", config.signer.signupError.message.c_str());
+  }
+
+  /* Assign the callback function for the long running token generation task */
+  config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+  Firebase.RTDB.setString(&fbdo, "/Player 1", "ONLINE");
+  Firebase.RTDB.setString(&fbdo, "/Player 2", "ONLINE");
+
+  unsigned long currentMillis = millis(); // Get the current time in milliseconds
+  randomTime = random(2000, 5000); // Generate a random time between 2 and 5
+  ledOnTime = currentMillis + randomTime;
+  //unsigned long buttonPressTime= millis(digitalRead=HIGH)-ledOnTime;
+  // unsigned long score= 1/buttonPressTime;
+  
+  pinMode(button1, INPUT_PULLUP); // Set button pin as input with pull-up resistor
+  pinMode(led1, OUTPUT); // Set LED pin as output
+  pinMode(button2, INPUT_PULLUP); // Set button pin as input with pull-up resistor
+  pinMode(led2, OUTPUT); // Set LED pin as output
+}
+
+
+void loop() {
+  playerloop(led1, button1, player1);
+  playerloop(led2, button2, player2);
+}
+
+void playerloop(int ledPin, int buttonPin, String player) {
+  // turn on when it comes time
+  if (millis() >= ledOnTime && digitalRead(ledPin) == LOW) {
+    digitalWrite(ledPin, HIGH); 
+  }
+
+  // Check if the button is pressed and the LED is on
+  if (digitalRead(buttonPin) == LOW && digitalRead(ledPin) == HIGH) {
+    unsigned long elapsedTime = millis() - ledOnTime;     // Calculate the elapsed time since the LED turned on
+    Serial.println("elapsed time:" + elapsedTime);
+    
+    if (buttonPin == button1){ // Score is proportional to 1000 divided by elapsed time in milliseconds
+      score1 += 1000.0 / elapsedTime;
+          // Send the score to Firebase
+      Firebase.RTDB.setInt(&fbdo, "/"+ player +"/SCORE", score1);
+      // Serial.println("Score sent to Firebase: " + String(score));
+    }
+    else {
+      score2 += 1000.0 / elapsedTime;
+      Firebase.RTDB.setInt(&fbdo, "/"+ player +"/SCORE", score2);
+    }
+  
+    // Turn off the LED
+    digitalWrite(ledPin, LOW);
+    ledOnTime = millis() + random(2000, 5000);
+  }
+}
+
+</code>
+</pre>
+
+<h5>Demo</h5>
+Here is a video of the Firebase RTDB updating the score according to how fast the button is pressed:<br>
+<br>
 <div class="flexrow">
-  <img src="buzzer_circuit_1.png" alt="a photo of an Arduino attached to a piezo buzzer">
-  <img src="buzzer_circuit_2.png" alt="another photo of the same circuit">
+<video width="50%" autoplay muted>
+  <source src="Whac_A_Mole_Demo.MOV" type="video/mp4">
+  </video>
 </div>
-<p class="caption">The buzzer circuit setup.</p>
 
-For the code, we started off with the Arduino example sketch for a simple WiFi
-server to make sure things were working. Instead of translating songs into
-frequencies ourselves, we decided to go online and see what songs we could find
-already adapted for Arduino. We found a version of the theme from <em>Game of Thrones</em>,
-so we combined that code into the Wifi sketch and added a button on the website
-to play it. To test our work, we connected the buzzer circuit to my computer with the
-Arduino code and accessed the LAN website from Adelaide's computer.
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <img src="buzzer_setup.png" alt="a photo of the circuit from above plus a computer showing code and another showing a simple website.">
-</div>
-<p class="caption">The buzzer circuit connected to my computer while Adelaide's computer talks to the LAN website.</p>
-
-We wanted to add another song for the buzzer to play, but we wanted to have some
-fun with it, so we found another sketch online that had transcribed "Never Gonna
-Give You Up" by Rick Astley and integrated that into our code. This was a little bit
-tricky, because the two songs were written with different logic, but we managed to
-reverse-engineer the code and slot in the necessary portions while avoiding unnecessary
-repetition.
-
-As you can see from the photo of the interface below, we tried to add a button
-to make the buzzer stop playing music, but between the loop code for the WiFi
-server and the loop code to play the music, we couldn't get it to work, so we
-scrapped that idea.
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <img src="initial_LAN_interface.png" alt="a photo of a basic website with three lines of text">
-</div>
-<p class="caption">The initial interface, with buttons for the two songs and a (broken) 'stop' button.</p>
-
-Once this was working, we decided to make it a little funnier by duplicating our
-"play a song" buttons so that it would look like the Arduino could play a bunch of
-different songs, but actually every button (save one) would be a Rickroll. We also
-added emoticons to each line, just for fun. I had a great time working with Adelaide
-on this project, and I think we did a good job of complementing each other's strengths!
-
-<p class="margin">   </p>
-<div class="flexrow">
-  <img src="final_LAN_interface.png" alt="a photo of a basic website with several lines of text">
-</div>
-<p class="caption">The final interface, with a whole bunch of buttons that (mostly) are just Rickrolls. Which one do you think is the <em>Game of Thrones</em> theme?</p>
-
+<h5>Future Iterations</h5>
+Work was started to make the LED more mole-like– the plan was to use a solenoid attached to a mole figure so it could pop up and down, but this hasn’t been finished yet.
 
 </div>
 </xmp>

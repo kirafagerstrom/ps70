@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PHYSCI 70: Introduction to Digital Fabrication</title>
+</head>
+
+<body>
+    <div class="row">
+        <div class="column"> 
+            <h1> PLAYER 1: <h1>
+            <h1 id="Player1" name="Player1"> </h1>
+        </div>
+        <div class="column"> 
+            <h1> PLAYER 2: <h1>
+            <h1 id="Player2" name="Player2"> </h1>
+        </div>
+    </div>
+    
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+
+</body>
+
+
+ <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyDqKrIBQJPREROt6Rud552YL1Ig1bmLvbg",
+        authDomain: "week-9-assignment.firebaseapp.com",
+        databaseURL: "https://week-9-assignment-default-rtdb.firebaseio.com",
+        projectId: "week-9-assignment",
+        storageBucket: "week-9-assignment.appspot.com",
+        messagingSenderId: "606426012864",
+        appId: "1:606426012864:web:8d7c375088cea0702f2125",
+        measurementId: "G-RW3TZ3MPPC"
+    };
+        // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Get a database reference to our blog
+    var ref = firebase.database().ref("/");
+    var player1 = firebase.database().ref().child('/Player 1/SCORE');
+    var player2 = firebase.database().ref().child('/Player 2/SCORE');
+
+    player1.on('value', snap=> {
+        document.getElementById('Player1').innerHTML = snap.val();
+    });
+    player2.on('value', snap=> {
+        document.getElementById('Player2').innerHTML = snap.val();
+    });
+
+</script>
