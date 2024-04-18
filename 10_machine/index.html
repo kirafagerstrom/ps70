@@ -425,10 +425,33 @@ After <em>many</em> hours of troubleshooting, we landed on this code that integr
 <body>
 
 <div class="flex-container">
-    <iframe width="560" height="315" src="https://youtu.be/kJ8SLibc8H4" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/watch?v=kJ8SLibc8H4" frameborder="0" allowfullscreen></iframe>
 </div>
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video in Flex Row</title>
+    <style>
+        .flex-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
+        video {
+            width: 50%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="flex-container">
+    <video controls>
+        <source src="./chalk robot demo.mp4" type="video/mp4">
+    </video>
+</div>
 </body>
 </html>
 
