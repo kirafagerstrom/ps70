@@ -123,7 +123,25 @@ The oscilloscope readings turned out to be very boring when I hooked it up the L
 I think this will be much more informative with the capacitive sensor/pill sensors because the circuit will have a lot more complexity. And the variable input may have a cooler wave function.
 
 <h5>Iteration 2</h5>
-This iteration, I replaced the physical input buttons with a website interface, giving the user a few more options and ability to choose the frequency within a day. I used the same strategy as the machine building and networking assignments to connect the website interface to a Firebase RTDB, which relayed commands to the ESP32, turning on the LEDs according to the inputted regimen. I used the same basic tutorials from networking week (from <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/">RandomNerd</a> and <a href="https://nathanmelenbrink.github.io/ps70/09_networking/index.html">Nathan</a>)
+This iteration, I replaced the physical input buttons with a website interface, giving the user a few more options and ability to choose the frequency within a day. I used the same strategy as the machine building and networking assignments to connect the website interface to a Firebase RTDB, which relayed commands to the ESP32, turning on the LEDs according to the inputted regimen. I used the same basic tutorials from networking week (from <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/">RandomNerd</a> and <a href="https://nathanmelenbrink.github.io/ps70/09_networking/index.html">Nathan</a>). <a href="https://kirafagerstrom.github.io/ps70/13_finalproject/control.html">Here is the control interface website</a>, and below is a screenshot of the Firebase RTDB updating according to the website:<br>
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="./control1.png" width="30%">
+  <img src="./firebasess.png" width="55%">
+</div><br>
+<br>
+Here's the updated wiring to the ESP32, where each LED is connected to D13, 14, 27, 26, 25, 35, which on the Dev Board have both input and output capability:<br>
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="./wiring.jpeg" alt="circuit with a pillbox and lights" width="45%">
+</div>
+
+Here is the ESP code, which is unfortunately not working at this juncture. Stay tuned for working updates! 
+<iframe src=https://create.arduino.cc/editor/kfagerstrom/48ec01fb-12b9-4c51-befe-98dd9dedcab1/preview?embed style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+
+<h5>Future iterations</h5>
+Once I get the code working, I'll add in the capacitive sensors for each compartment (which I'll need to multiplex). The other big step will be to design and 3D print the box with room for the electronics, and integrate power.
+
 
 </div>
 </xmp>
