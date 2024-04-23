@@ -1,16 +1,15 @@
-<!doctype html>
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PHYSCI 70: Introduction to Digital Fabrication</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../style.css" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
 </head>
 
 <body>
-<div class="textcontainer">
-<p class="margin">   </p>
+    <div class="textcontainer">
+        <p class="margin">   </p>
         <label for="fname">Medication Name</label><br>
         <input type="text" id="fname" name="fname"><br><br>
         <label for="radio">Medication Frequency: How many times per <b>week</b> do you take it?</label><br>
@@ -34,11 +33,10 @@
         <label for="html">Twice</label><br>
         <input type="radio" id="threetimeday" name="dayfrequency" value="threetimeday">
         <label for="html">Three times</label><br>
-<br>
+        <br>
         <button id="submit">Submit</button><br><br>
         <button id="next">Next Medication</button><br><br>
-
-</div>
+    </div>
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
@@ -59,13 +57,13 @@
         appId: "1:146779684231:web:2799f82347dc5cec10e722",
         measurementId: "G-4T82GV1Q19"
     };
-        // Initialize Firebase
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
     // Get a database reference to our blog
     var ref = firebase.database().ref("/");
 
-     // Function to send medication data to Firebase
+    // Function to send medication data to Firebase
     function submit() {
         var medicationName = document.getElementById('fname').value;
         var weekFrequency = document.querySelector('input[name="frequency"]:checked').value;
@@ -78,15 +76,27 @@
         });
     }
 
-    // Function to handle next medication
+    // Function for next medication
     function next() {
-        // You can implement the functionality for moving to the next medication here
+        // Clear input fields
+        document.getElementById('fname').value = ''; // Medication Name
+
+        // Clear radio button selections for medication frequency (week)
+        var weekFrequencyRadios = document.querySelectorAll('input[name="frequency"]');
+        weekFrequencyRadios.forEach(function(radio) {
+            radio.checked = false;
+        });
+
+        // Clear radio button selections for medication frequency (day)
+        var dayFrequencyRadios = document.querySelectorAll('input[name="dayfrequency"]');
+        dayFrequencyRadios.forEach(function(radio) {
+            radio.checked = false;
+        });
     }
 
     // Attach event listeners to the buttons
     document.getElementById('submit').addEventListener('click', submit, false);
     document.getElementById('next').addEventListener('click', next, false);
     </script>
-
 </body>
 </html>
