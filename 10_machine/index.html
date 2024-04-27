@@ -83,11 +83,8 @@ To control the robot, we decided to create an html site with drawing options tha
 </div>
 
 <h5>Microcontroller Code</h5>
-After <em>many</em> hours of troubleshooting, we landed on this code that integrates commands from the Firebase RTDB to specify which color is dispensed and where to drive. For the Firebase-html-ESP communication, we used Nathan's tutorial from Networking Week. We used parts of Bobby's group's code as a guide, but didn't use the gyroscope or p5 canvas interface, instead using a simpler step-by-step input from our website.<br>
+After <em>many</em> hours of troubleshooting, we landed on this code that integrates commands from the Firebase RTDB to specify which color is dispensed and where to drive. For the Firebase-html-ESP communication, we used Nathan's tutorial from Networking Week. We used parts of Bobby's group's code as a guide, but didn't use the gyroscope or p5 canvas interface, instead using a simpler step-by-step input from our website.<br></p>
 
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -111,9 +108,7 @@ After <em>many</em> hours of troubleshooting, we landed on this code that integr
         }
     </style>
 </head>
-<body>
 
-<!-- Scrollable box containing code snippet -->
 <div class="code-box">
     <pre class="code">
         <code>
@@ -419,50 +414,27 @@ After <em>many</em> hours of troubleshooting, we landed on this code that integr
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Embedded YouTube Video</title>
 </head>
-<body>
 
 <div class="flex-container">
-    <iframe width="560" height="315" src="https://www.youtube.com/watch?v=kJ8SLibc8H4" frameborder="0" allowfullscreen></iframe>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/watch?v=kJ8SLibc8H4" frameborder="0" allowfullscreen></iframe>
 </div>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video in Flex Row</title>
-    <style>
-        .flex-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        video {
-            width: 50%;
-            height: auto;
-        }
-    </style>
-</head>
-<body>
-<br>
 
 <h6>Unwired/mobile robot demo</h6>
 <div class="flex-container">
     <video controls>
-        <source src="mobile robot.mov" type="video/mp4">
+        <source src="mobile robot.mov" type="video/mp4" width=40%>
     </video>
 </div>
-</html>
+
 <h6>Final demo in class</h6>
 <div class="flex-container">
     <video controls>
-        <source src="final demo.mov" type="video/mp4">
+        <source src="final demo.mov" type="video/mp4" width=40%>
     </video>
-        <video controls>
-        <source src="final demo2.MOV" type="video/mp4">
+    <video controls>
+        <source src="final demo2.MOV" type="video/mp4" width=40%>
     </video>
 
-</div>
-</html>
 <br>
 <h5>Future iterations</h5>
 One idea we had during the process was to drive the robot remotely like an RC car, but opted for a simpler driving system with the html website. Now that we mostly have the code for the circle, rotation, and line functionalities figured out, this could be our next iteration so that the user could do a freestyle drawing with greater ease.
