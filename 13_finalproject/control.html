@@ -76,23 +76,33 @@
         });
     }
 
-    // Function for next medication
-    function next() {
-        // Clear input fields
-        document.getElementById('fname').value = ''; // Medication Name
+//Function for next medication
+function next() {
+    // Clear input fields
+    document.getElementById('fname').value = ''; // Medication Name
 
-        // Clear radio button selections for medication frequency (week)
-        var weekFrequencyRadios = document.querySelectorAll('input[name="frequency"]');
-        weekFrequencyRadios.forEach(function(radio) {
-            radio.checked = false;
-        });
+    // Clear radio button selections for medication frequency (week)
+    var weekFrequencyRadios = document.querySelectorAll('input[name="frequency"]');
+    weekFrequencyRadios.forEach(function(radio) {
+        radio.checked = false;
+    });
 
-        // Clear radio button selections for medication frequency (day)
-        var dayFrequencyRadios = document.querySelectorAll('input[name="dayfrequency"]');
-        dayFrequencyRadios.forEach(function(radio) {
-            radio.checked = false;
-        });
-    }
+    // Clear radio button selections for medication frequency (day)
+    var dayFrequencyRadios = document.querySelectorAll('input[name="dayfrequency"]');
+    dayFrequencyRadios.forEach(function(radio) {
+        radio.checked = false;
+    });
+
+    // Send signal to Firebase to turn off LEDs
+    ref.update({
+        "Turn_Off_LEDs": true
+    });
+}
+
+// Attach event listeners to the buttons
+document.getElementById('submit').addEventListener('click', submit, false);
+document.getElementById('next').addEventListener('click', next, false);
+
 
     // Attach event listeners to the buttons
     document.getElementById('submit').addEventListener('click', submit, false);
