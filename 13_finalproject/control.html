@@ -66,7 +66,7 @@
     // Function to send medication data to Firebase
     function submit() {
         var medicationName = document.getElementById('fname').value;
-        var weekFrequency = document.querySelector('input[name="frequency"]:checked').value;
+        var weekFrequency = parseInt(document.querySelector('input[name="frequency"]:checked').value);
         var dayFrequency = document.querySelector('input[name="dayfrequency"]:checked').value;
 
         ref.update({
