@@ -93,9 +93,11 @@ function next() {
         radio.checked = false;
     });
 
-    // Send signal to Firebase to turn off LEDs
+// Send signal to Firebase to turn off LEDs
     ref.update({
-        "Turn_Off_LEDs": true
+        "Turn_Off_LEDs": true,
+        "Week_Frequency": null, // Clear Week_Frequency field in Firebase
+        "Day_Frequency": null // Clear Day_Frequency field in Firebase (if applicable)
     });
 }
 
