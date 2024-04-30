@@ -73,6 +73,7 @@
             "Medication_Name": medicationName,
             "Week_Frequency": weekFrequency,
             "Day_Frequency": dayFrequency,
+            "Turn_Off_LEDs": false,
         });
     }
 
@@ -97,7 +98,7 @@ function next() {
     ref.update({
         "Turn_Off_LEDs": true,
         "Week_Frequency": null, // Clear Week_Frequency field in Firebase
-        "Day_Frequency": null // Clear Day_Frequency field in Firebase (if applicable)
+        "Day_Frequency": null // Clear Day_Frequency field in Firebase
     });
 }
 
