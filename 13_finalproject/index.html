@@ -136,9 +136,173 @@ Here's the updated wiring to the ESP32, where each LED is connected to D13, 14, 
   <img src="./wiring.jpeg" alt="circuit with a pillbox and lights" width="45%">
 </div>
 
-Here is the ESP code, which is unfortunately not working at this juncture. Stay tuned for working updates! 
-<iframe src=https://create.arduino.cc/editor/kfagerstrom/48ec01fb-12b9-4c51-befe-98dd9dedcab1/preview?embed style="height:510px;width:100%;margin:10px 0" frameborder=0></iframe>
+Here is the ESP code, which I had some trouble with at first, but switched the class structures back to normal functions for easier decoding, and came up with this working code. I then expanded this to control 2 rows of LEDs, one for the morning compartments and one for the evening, and updated my html code for the control website to match this functionality. All 3 codes are below:
+<br>
+<b>Single Row Code</b>
+<br>
+<center><div style="code-box;overflow:auto;">
+  <pre><code>
+                //code for connecting to firebase/controls
+            //control website: <a href="https://kirafagerstrom.github.io/ps70/13_finalproject/control.html">https://kirafagerstrom.github.io/ps70/13_finalproject/control.html</a>
 
+            #include &lt;Arduino.h&gt;
+            #if defined(ESP32)
+              #include &lt;WiFi.h&gt;
+            #elif defined(ESP8266)
+              #include &lt;ESP8266WiFi.h&gt;
+            #endif
+            #include &lt;Firebase_ESP_Client.h&gt;
+
+
+            //Provide the token generation process info.
+            #include "addons/TokenHelper.h"
+            //Provide the RTDB payload printing info and other helper functions.
+            #include "addons/RTDBHelper.h"
+
+            // Insert your network credentials but take them out when you put them online
+            #define WIFI_SSID "wifi"
+            #define WIFI_PASSWORD "password"
+
+            // Insert Firebase project API Key
+            #define API_KEY "api key"
+
+            // Insert RTDB URLefine the RTDB URL /
+            #define DATABASE_URL "databaseurl.com" 
+
+            //Define Firebase Data object
+            FirebaseData fbdo;
+
+            FirebaseAuth auth;
+            FirebaseConfig config;
+            bool signupOK = false;
+
+            const int ledPins[] = {13, 14, 27, 26, 25, 33, 32}; // Pins connected to LEDs
+            bool ledState[7] = {false}; // Array to track the LED state for each compartment
+
+            unsigned long previousMillis = 0; // Variable to store the previous time
+            const long interval = 1000; // Interval for LED toggle (1 second)
+
+            void setup() {
+              Serial.begin(115200);
+              Serial.println("Initializing");
+
+              // Connect to Wi-Fi
+              WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+              Serial.print("Connecting to Wi-Fi");
+              while (WiFi.status() != WL_CONNECTED) {
+                Serial.print(".");
+                delay(300);
+              }
+              Serial.println();
+              Serial.print("Connected with IP: ");
+              Serial.println(WiFi.localIP());
+              Serial.println();
+
+              // Initialize Firebase
+              config.api_key = API_KEY;
+              config.database_url = DATABASE_URL;
+              if (Firebase.signUp(&config, &auth, "", "")) {
+                Serial.println("Firebase signed up successfully");
+                signupOK = true;
+              } else {
+                Serial.printf("Firebase signup error: %s\n", config.signer.signupError.message.c_str());
+              }
+              config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+              Firebase.begin(&config, &auth);
+              Firebase.reconnectWiFi(true);
+
+              for (int i = 0; i < 7; i++) {
+                pinMode(ledPins[i], OUTPUT);
+              }
+
+            }
+
+            void loop() {
+              if (signupOK) {
+                if (Firebase.RTDB.getInt(&fbdo, "/Week_Frequency")) {
+                  int frequency =  fbdo.intData();
+                  switch (frequency) {
+                    case 1:
+                      turnOnEverydayLEDs();
+                      break;
+                    case 2:
+                      turnOnEveryOtherDayLEDs();
+                      break;
+                    case 3:
+                      turnOnTwiceAWeekLEDs();
+                      break;
+                    case 4:
+                      turnOnThreeTimesAWeekLEDs();
+                      break;
+                    case 5:
+                      turnOnFourTimesAWeekLEDs();
+                      break;
+                    case 6:
+                      turnOnFiveTimesAWeekLEDs();
+                      break;
+                    default:
+                      turnOffAllLEDs();
+                      break;
+                  }
+                }
+              }
+                if (Firebase.RTDB.getBool(&fbdo, "/Turn_Off_LEDs")) { // Check if the data is successfully retrieved from the Firebase Realtime Database for "turn_off_leds"
+                  bool turnOffLEDs = fbdo.boolData(); // Get the boolean value from the Firebase data
+                  if (turnOffLEDs) {
+                    turnOffAllLEDs(); // If 'turn_off_leds' is true, turn off all LEDs
+                  }
+                }
+
+            }
+
+            void turnOnEverydayLEDs() {
+              for (int i = 0; i < 7; i++) {
+                digitalWrite(ledPins[i], HIGH);
+              }
+            }
+
+            void turnOnEveryOtherDayLEDs() {
+              for (int i = 0; i < 7; i += 2) {
+                digitalWrite(ledPins[i], HIGH);
+              }
+            }
+
+            void turnOnTwiceAWeekLEDs() {
+              for (int i = 0; i < 2; i++) {
+                digitalWrite(ledPins[i], HIGH);
+              }
+            }
+
+            void turnOnThreeTimesAWeekLEDs() {
+              for (int i = 0; i < 3; i++) {
+                digitalWrite(ledPins[i], HIGH);
+              }
+            }
+
+            void turnOnFourTimesAWeekLEDs() {
+              for (int i = 0; i < 4; i++) {
+                digitalWrite(ledPins[i], HIGH);
+              }
+            }
+
+            void turnOnFiveTimesAWeekLEDs() {
+              for (int i = 0; i < 5; i++) {
+                digitalWrite(ledPins[i], HIGH);
+              }
+            }
+
+            void turnOffAllLEDs() {
+              for (int i = 0; i < 7; i++) {
+                digitalWrite(ledPins[i], LOW);
+              }
+            }
+        </pre>
+    </code>
+  </pre></div></center>
+
+
+
+I came back to this code, but undid the class structure and instead used cases for each possible LED option, and updated the html code to 
 <h5>Future iterations</h5>
 Once I get the code working, I'll add in the capacitive sensors for each compartment (which I'll need to multiplex). The other big step will be to design and 3D print the box with room for the electronics, and integrate power.
 

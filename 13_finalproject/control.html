@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,12 +9,19 @@
 </head>
 
 <body>
+    <p class="margin"></p><br>
+    <b><h2><center>Welcome to Refill Guide!</center></h2></b>
     <div class="textcontainer">
-        <p class="margin">   </p>
+        <p class="margin"></p>
+        <center><b><u>Instructions:</u></b> Fill in the information from the label on your medication bottle below. You can choose the days of the week and how many times per day you want to take it, then press <b><u>Submit</u></b>. Put the indicated amount of pills in the compartments that light up. When you're ready to refill your next prescription, press <b><u>Next Medication</u></b>, and the lights will turn off.</center>
+    </div>
+    <div class="textcontainer">
         <label for="fname">Medication Name</label><br>
         <input type="text" id="fname" name="fname"><br><br>
+        <label for="tablets">Number of Tablets</label><br>
+        <input type="number" id="tablets" name="tablets"><br><br>
         <label for="radio">Medication Frequency: How many times per <b>week</b> do you take it?</label><br>
-        <input type="radio" id="everyday" name="frequency" value="1">
+       <input type="radio" id="everyday" name="frequency" value="1">
         <label for="html">Daily/everyday</label><br>
         <input type="radio" id="everyotherday" name="frequency" value="2">
         <label for="html">Every other day</label><br>
@@ -25,18 +33,53 @@
         <label for="html">Four times per week</label><br>
         <input type="radio" id="fivetimes" name="frequency" value="6">
         <label for="html">Five times per week</label><br>
+        
+        <div id="daySelection" style="display: none;">
+            <label for="days">Select days:</label><br>
+            <input type="checkbox" id="sunday" name="days" value="Sunday">
+            <label for="sunday">Sunday</label><br>
+            <input type="checkbox" id="monday" name="days" value="Monday">
+            <label for="monday">Monday</label><br>
+            <input type="checkbox" id="tuesday" name="days" value="Tuesday">
+            <label for="tuesday">Tuesday</label><br>
+            <input type="checkbox" id="wednesday" name="days" value="Wednesday">
+            <label for="wednesday">Wednesday</label><br>
+            <input type="checkbox" id="thursday" name="days" value="Thursday">
+            <label for="thursday">Thursday</label><br>
+            <input type="checkbox" id="friday" name="days" value="Friday">
+            <label for="friday">Friday</label><br>
+            <input type="checkbox" id="saturday" name="days" value="Saturday">
+            <label for="saturday">Saturday</label><br>
+        </div>
+<script>
+    document.querySelectorAll('input[name="frequency"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (this.value === '3' || this.value === '4' || this.value === '5' || this.value === '6') {
+                // If frequency is three, four, or five times per week
+                document.getElementById('daySelection').style.display = 'block';
+            } else {
+                document.getElementById('daySelection').style.display = 'none';
+            }
+        });
+    });
+</script>
+
         <br>
         <label for="radio">Medication Frequency: How many times per <b>day</b> do you take it?</label><br>
         <input type="radio" id="onceday" name="dayfrequency" value="onceday">
         <label for="html">Once</label><br>
         <input type="radio" id="twiceeday" name="dayfrequency" value="twiceday">
         <label for="html">Twice</label><br>
-        <input type="radio" id="threetimeday" name="dayfrequency" value="threetimeday">
-        <label for="html">Three times</label><br>
         <br>
         <button id="submit">Submit</button><br><br>
+            <div id="summarySection" style="display: none;">
+        <h3>You're filling:</h3>
+        <p id="summary"></p>
+    </div>
         <button id="next">Next Medication</button><br><br>
     </div>
+    <!-- Section to display summary -->
+
 
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
@@ -46,7 +89,7 @@
     <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
 
     <script>
-    // Your web app's Firebase configuration
+        // Your web app's Firebase configuration
     var firebaseConfig = {
         apiKey: "AIzaSyC_vYismxEwVhgX-6Ny0SJw028IpcDhZyg",
         authDomain: "smart-pillbox-87589.firebaseapp.com",
@@ -56,61 +99,135 @@
         messagingSenderId: "146779684231",
         appId: "1:146779684231:web:2799f82347dc5cec10e722",
         measurementId: "G-4T82GV1Q19"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
 
-    // Get a database reference to our blog
-    var ref = firebase.database().ref("/");
+        // Get a database reference to our blog
+        var ref = firebase.database().ref("/");
 
-    // Function to send medication data to Firebase
-    function submit() {
-        var medicationName = document.getElementById('fname').value;
-        var weekFrequency = parseInt(document.querySelector('input[name="frequency"]:checked').value);
-        var dayFrequency = document.querySelector('input[name="dayfrequency"]:checked').value;
+        // Function to send medication data to Firebase
+        function submit() {
+    var medicationName = document.getElementById('fname').value;
+    var weekFrequency = parseInt(document.querySelector('input[name="frequency"]:checked').value);
+    var dayFrequency = document.querySelector('input[name="dayfrequency"]:checked').value;
+    var tabletCount = document.getElementById('tablets').value;
 
-        ref.update({
-            "Medication_Name": medicationName,
-            "Week_Frequency": weekFrequency,
-            "Day_Frequency": dayFrequency,
-            "Turn_Off_LEDs": false,
+    var frequencyText;
+    // Update frequencyText based on weekFrequency value
+    switch (weekFrequency) {
+        case 1:
+            frequencyText = 'everyday'; // Change to 'daily' if preferred
+            break;
+        case 2:
+            frequencyText = 'every other day';
+            break;
+        case 3:
+            frequencyText = 'twice per week';
+            break;
+        case 4:
+            frequencyText = 'three times per week';
+            break;
+        case 5:
+            frequencyText = 'four times per week';
+            break;
+        case 6:
+            frequencyText = 'five times per week';
+            break;
+        default:
+            frequencyText = weekFrequency + ' times per week';
+    }
+
+    var dayFrequencyText;
+    // Update dayFrequencyText based on dayFrequency value
+    switch (dayFrequency) {
+        case 'onceday':
+            dayFrequencyText = 'once';
+            break;
+        case 'twiceday':
+            dayFrequencyText = 'twice';
+            break;
+        default:
+            dayFrequencyText = dayFrequency;
+    }
+
+    var daysSelected = [];
+    if (weekFrequency >= 3 && weekFrequency <= 6) {
+        // Get the selected days
+        var selectedDays = document.querySelectorAll('input[name="days"]');
+        selectedDays.forEach(function(day) {
+            if (day.checked) {
+                daysSelected.push(day.value);
+            }
         });
     }
 
-//Function for next medication
-function next() {
-    // Clear input fields
-    document.getElementById('fname').value = ''; // Medication Name
+    var data = {
+        "Medication_Name": medicationName,
+        "Week_Frequency": {
+            "value": weekFrequency,
+            "days": daysSelected
+        },
+        "Day_Frequency": dayFrequency,
+        "Turn_Off_LEDs": false,
+        "Tablet_Count": tabletCount
+    };
 
-    // Clear radio button selections for medication frequency (week)
-    var weekFrequencyRadios = document.querySelectorAll('input[name="frequency"]');
-    weekFrequencyRadios.forEach(function(radio) {
-        radio.checked = false;
-    });
+    ref.update(data);
 
-    // Clear radio button selections for medication frequency (day)
-    var dayFrequencyRadios = document.querySelectorAll('input[name="dayfrequency"]');
-    dayFrequencyRadios.forEach(function(radio) {
-        radio.checked = false;
-    });
-
-// Send signal to Firebase to turn off LEDs
-    ref.update({
-        "Turn_Off_LEDs": true,
-        "Week_Frequency": null, // Clear Week_Frequency field in Firebase
-        "Day_Frequency": null // Clear Day_Frequency field in Firebase
-        "Medication_Name": null, // Clear Medication_name field in Firebase
-    });
+    // Display summary on the same page
+    var summarySentence = medicationName + ", " + frequencyText + ", " + dayFrequencyText + " per day. Put " + tabletCount + " tablets in the lighted compartments, then press Next Medication to move on.";
+    var summaryHTML = "<h3>" + summarySentence + "</h3>";
+    document.getElementById('summary').innerHTML = summaryHTML;
+    document.getElementById('summarySection').style.display = 'block';
 }
 
-// Attach event listeners to the buttons
-document.getElementById('submit').addEventListener('click', submit, false);
-document.getElementById('next').addEventListener('click', next, false);
+        // Function for next medication
+        function next() {
+            // Clear input fields
+            document.getElementById('fname').value = ''; // Medication Name
+            document.getElementById('tablets').value = ''; // Tablet Count
 
+            // Clear radio button selections for medication frequency (week)
+            var weekFrequencyRadios = document.querySelectorAll('input[name="frequency"]');
+            weekFrequencyRadios.forEach(function(radio) {
+                radio.checked = false;
+            });
 
-    // Attach event listeners to the buttons
-    document.getElementById('submit').addEventListener('click', submit, false);
-    document.getElementById('next').addEventListener('click', next, false);
+            // Clear radio button selections for medication frequency (day)
+            var dayFrequencyRadios = document.querySelectorAll('input[name="dayfrequency"]');
+            dayFrequencyRadios.forEach(function(radio) {
+                radio.checked = false;
+            });
+
+            // Clear radio button selections for time of day
+            var timeDayRadios = document.querySelectorAll('input[name="timeday"]');
+            timeDayRadios.forEach(function(radio) {
+                radio.checked = false;
+            });
+                // Clear the summary content
+    document.getElementById('summary').textContent = '';
+
+    // Hide summary section
+    document.getElementById('summarySection').style.display = 'none';
+
+            // Send signal to Firebase to turn off LEDs
+            ref.update({
+                "Turn_Off_LEDs": true,
+                "Week_Frequency": null, // Clear Week_Frequency field in Firebase
+                "Day_Frequency": null, // Clear Day_Frequency field in Firebase
+                "Medication_Name": null, // Clear Medication_name field in Firebase
+                "Time_Day": null // Clear Time_Day field in Firebase
+            });
+
+            // Hide summary section
+            document.getElementById('summarySection').style.display = 'none';
+        }
+
+        // Attach event listeners to the buttons
+        document.getElementById('submit').addEventListener('click', submit, false);
+        document.getElementById('next').addEventListener('click', next, false);
+
     </script>
 </body>
 </html>
