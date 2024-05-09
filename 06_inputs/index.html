@@ -82,7 +82,25 @@ I followed the tutorial on the class website and used CapacitiveSensor library e
 </body>
 </html><br>
 
-This was a good idea in theory but in practice it was a flop. When it came time to calibrate, adding pills to the sensor didn't change the Arduino reading. I thought this might be because I was using a 1 M ohm resistor, so I tried 3 and 10 M ohms to make it more sensitive. 3 M ohms still wasn't sensitive enough, but 10 M ohms was a bit too sensitive and the readings were affected by surrounding objects (mostly by me). I think the capacitance between the pills and the sensor was too small because of their small size (less surface area touching the capacitor) and their dielectric constant may be too low. My next attempt will be a transmit-receive weight sensor that will hopefully be able to sense the small changes in plate position caused by adding more tablets. I think using a thin but flexible dielectric between the two foil sheets will be more sensitive and easier to calibrate, but I'll try a variety of materials/thicknesses.
+This was a good idea in theory but in practice it was a flop. When it came time to calibrate, adding pills to the sensor didn't change the Arduino reading. I thought this might be because I was using a 1 M ohm resistor, so I tried 3 and 10 M ohms to make it more sensitive. 3 M ohms still wasn't sensitive enough, but 10 M ohms was a bit too sensitive and the readings were affected by surrounding objects (mostly by me). I think the capacitance between the pills and the sensor was too small because of their small size (less surface area touching the capacitor) and their dielectric constant may be too low. My next attempt will be a transmit-receive weight sensor that will hopefully be able to sense the small changes in plate position caused by adding more tablets. I think using a thin but flexible dielectric between the two foil sheets will be more sensitive and easier to calibrate, but I'll try a variety of materials/thicknesses.<br>
+<br>
+<h5>Piezo vibration sensing</h5><br>
+I pivoted to try another input: piezo sensing. When someone drops a pill in the compartment, it will cause a vibration that the piezo plate can sense. If the reading is above a certain threshold (indicating a pill was dropped into that compartment), then the LED for that compartment would turn off. I tried this with a small piezo plate placed below one of the compartments in my final printed pillbox. I dropped a pill in each compartment in the same row to get a sense of what the threshold would be for putting a pill in the respective compartment vs the others (which should have a lower reading).<br>
+The code modified the example AnalogRead code to sum the voltage, as we did in the capacitive sensing code. It prints the voltage to the serial plotter and monitor, where I read the values upon dropping the pill in the compartment:
+<div class="flexrow">
+<video width="50%" autoplay muted>
+  <source src="./piezosense.MOV" type="video/mp4">
+  </video>
+</div>
+
+<iframe src="https://app.arduino.cc/sketches/fb910bef-fb13-4f49-8cb3-69385c17df22?view-mode=embed" style="height:510px;width:100%;margin:10px 0" frameborder=0 /></iframe><br>
+
+The values were not super consistent, but there was at least a threshold of ~0.22 volts that distinguished between whether the pill was placed in the piezo sensed compartment or the adjacent compartment!
+
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="./graph.png" alt="graph and table of piezo reading values" width=50%>
+</div>
 
 
 </div>
