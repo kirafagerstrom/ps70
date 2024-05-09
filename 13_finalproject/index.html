@@ -24,8 +24,21 @@
 <div class="textcontainer">
 <p class="margin"></p>
 
-<h3 style="color:#e2165b";>Final project idea: Smart Pill Box</h3>
-I decided to go with the Smart Pill Box idea to guide the user when filling thei rmedication organizer. Here's the description from Week One again: <br>
+
+<h3>Final Project: Refill Guide Box</h3>
+My final project is a smart pillbox that guides a user through refilling their organizer will multiple medications. See the demo video below!<br>
+<div class="flexrow">
+<video width="50%" autoplay muted>
+  <source src="/Users/kirafagerstrom/Documents/GitHub/ps70/07_outputs/demovid.MOV" type="video/mp4">
+  </video>
+</div>
+
+
+
+
+<h4>Read below for updates from throughout the process:</h4><br>
+<h3 style="color:#e2165b";>Part One: Deciding on an idea</h3>
+I decided to go with the Smart Pill Box idea to guide the user when filling their medication organizer. Here's the description from Week One again: <br>
 A lot of smart pillboxes focus on reminding the user when to take their medications. My idea aims to make the other end of medication administration, filling the pillbox, easier. The idea is inspired by a couple of friends and relatives with chronic illnesses whose prescriptions change from month to month, making their medication schedules pretty complicated. 
 
 <br>
@@ -35,7 +48,7 @@ A lot of smart pillboxes focus on reminding the user when to take their medicati
 The organizer would look like a standard seven-day box, with each day divided into morning and night. It would sit on a base that puts lights under each compartment. At the beginning of each week, the user would input the instructions on the original bottle's label like "take 2 capsules every other day in the morning", either using buttons on the box or an interface on a computer/phone (maybe a website?). The corresponding compartments would light up based on the given schedule. Future iterations could include a reminder feature or an indication of how many pills to put in each compartment (i.e. the <a href="https://elliegrid.com/products/ellie-smart-pill-box">Ellie Grid</a>).<br>
 <br>
 
-
+<h3 style="color:#e2165b";>Part Two: Designing a box</h3>
 
 <h4><b>CAD model</b></h4>
 The first model I've made recapitulates a classic medication organizer design with 2 rows of 7 compartments for each day. Each compartment is a 3x3x3 snap-fit box that opens with a hinge. <br>
@@ -62,6 +75,9 @@ Print box and assemble circuitry(~ 1 week)<br>
 <a href="cnc.stl" download>Example CNC file for day labels on pillbox!</a>
 <br>
 <br>
+
+
+<h3 style="color:#e2165b";>Part Three: Building a prototype</h3>
 <h4>Minimum Viable Product</h4>
 
 The pillbox idea has 2 main components: the actual box itself, which I'll probably 3D print, and the electronic input/output electronics. The 3D printing and Fusion designing will be pretty straightforward, so this week I decided to try out a super basic input/output circuit, since I anticipate the Arduino programming to be the most challenging part of this project.<br>
@@ -121,6 +137,8 @@ The oscilloscope readings turned out to be very boring when I hooked it up the L
 </div>
 <p class="caption">oscilloscope reading at the moment the button was turned on, with the off voltage jumping up to the on voltage</p>
 I think this will be much more informative with the capacitive sensor/pill sensors because the circuit will have a lot more complexity. And the variable input may have a cooler wave function.
+
+<h3 style="color:#e2165b";>Part Four: Iterating</h3>
 
 <h5>Iteration 2</h5>
 This iteration, I replaced the physical input buttons with a website interface, giving the user a few more options and ability to choose the frequency within a day. I used the same strategy as the machine building and networking assignments to connect the website interface to a Firebase RTDB, which relayed commands to the ESP32, turning on the LEDs according to the inputted regimen. I used the same basic tutorials from networking week (from <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/">RandomNerd</a> and <a href="https://nathanmelenbrink.github.io/ps70/09_networking/index.html">Nathan</a>). <a href="https://kirafagerstrom.github.io/ps70/13_finalproject/control.html">Here is the control interface website</a>, and below is a screenshot of the Firebase RTDB updating according to the website:<br>
@@ -306,6 +324,26 @@ I came back to this code, but undid the class structure and instead used cases f
 <h5>Future iterations</h5>
 Once I get the code working, I'll add in the capacitive sensors for each compartment (which I'll need to multiplex). The other big step will be to design and 3D print the box with room for the electronics, and integrate power.
 
+<h3 style="color:#e2165b";>Part Five: The final (?) product</h3>
+The demo shows my product as it exists at the moment. I did want and try to integrate a feature to sense when pills were added to the box and thus turn the light off for the compartment, but ran out of time to complete it. Here's a summary of that process:<br>
+I first tried a few different ways of capacitive sensing, effectively building my own <a href="https://www.amazon.com/Pressure-Flexible-Sensitive-Waterproof-Resistor/dp/B0B8K4KR34/ref=asc_df_B0B8K4KR34/?tag=hyprod-20&linkCode=df0&hvadid=693071814688&hvpos=&hvnetw=g&hvrand=16525620245343154892&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9001999&hvtargid=pla-1952108706435&psc=1&mcid=8cc76ea8916731abacd3ce4597efa39f&gad_source=1&gclid=Cj0KCQjw6PGxBhCVARIsAIumnWaRNvHQaEiHC69ZmtL5GrwWj7IN5fHwQpFho7g10Q0cPRI3kEt-VFYaAt_jEALw_wcB">pressure sensor</a>. Here are the two options I tried out: 
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="./schematic cap sense.png" width="30%">
+</div><br>
+<br>
+
+For both, I  used the tx-rx setup and circuit on the class website from input week, trying out a variety of resistors to adjust sensitivity (from 100 kOhms to 10 MOhms). However, like many others experience in input week, capacitive sensing for things that aren't super conductive, like a small pill, is unreliable and has a lot of drift in the signal. I couldn't achieve a consistent reading, or a threshold for when the  box had pills in it and the light should turn off. From this I mostly learned that capacitive sensing is best used for sensing when you touch or go near a surface, but is less useful for inanimate and small objects. Maybe a really big pill would work?<br>
+
+<p class="margin">   </p>
+<div class="flexrow">
+  <img src="./cap sense.jpeg" width="30%">
+  <img src="./cap sense 2.jpeg" width="30%">
+</div><br>
+<br>
+<p class="caption">The setups for the two different types of capacitive sensing I tried</p>
+
+Next I tried piezo sensing, where the idea was to attach a piezo plate to the bottom of each compartment in my pillbox, which would sense when the box experienced a vibration (i.e. when someone puts tablets into it), and turn off the light in the compartment that it sensed vibration in. Testing out this idea (see <a href="https://kirafagerstrom.github.io/ps70/06_inputs/index.html")>my updated input week assignment</a>) was actually more promising than the capacitive sensor as it was more reliable, with less drift and a more consistent reading for when I put pills in the respective box. As I was working on this, I ran out of time to integrate it into the full final project, but would love to continue optimizing this strategy if I were to continue with the project! As of now, the function to turn off the LEDs is up to the user pressing "Next Medication" on the control website, which might actually be the most reliable (but boring) option of them all.
 
 </div>
 </xmp>
