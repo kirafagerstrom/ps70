@@ -35,13 +35,244 @@ My final project is a smart pillbox that guides a user through refilling their o
 
 <h4>The code</h4><br>
 The final version of the ESP32 code is updated from my last iteration to handle specific days of the week selected by the user, and my updated html code reflects that change.
-<iframe src="https://app.arduino.cc/sketches/f3b4633f-443a-4676-ae7d-b490b6fb9e19?view-mode=embed" style="height:510px;width:100%;margin:10px 0" frameborder=0 /><br>
+<iframe src="https://app.arduino.cc/sketches/f3b4633f-443a-4676-ae7d-b490b6fb9e19?view-mode=embed" style="height:510px;width:100%;margin:10px 0" frameborder=0 /></iframe><br>
+
+
 HTML code:
 <pre><code>
+&lt;html class=&quot;no-js&quot; lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+    &lt;title&gt;PHYSCI 70: Introduction to Digital Fabrication&lt;/title&gt;
+    &lt;link href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+    &lt;link href=&quot;../style.css&quot; rel=&quot;stylesheet&quot;&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;p class=&quot;margin&quot;&gt;&lt;/p&gt;&lt;br&gt;
+    &lt;b&gt;&lt;h2&gt;&lt;center&gt;Welcome to Refill Guide!&lt;/center&gt;&lt;/h2&gt;&lt;/b&gt;
+    &lt;div class=&quot;textcontainer&quot;&gt;
+        &lt;p class=&quot;margin&quot;&gt;&lt;/p&gt;
+        &lt;center&gt;&lt;b&gt;&lt;u&gt;Instructions:&lt;/u&gt;&lt;/b&gt; Fill in the information from the label on your medication bottle below. You can choose the days of the week and how many times per day you want to take it, then press &lt;b&gt;&lt;u&gt;Submit&lt;/u&gt;&lt;/b&gt;. Put the indicated amount of pills in the compartments that light up. When you're ready to refill your next prescription, press &lt;b&gt;&lt;u&gt;Next Medication&lt;/u&gt;&lt;/b&gt;, and the lights will turn off.&lt;/center&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;textcontainer&quot;&gt;
+        &lt;label for=&quot;fname&quot;&gt;Medication Name&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;text&quot; id=&quot;fname&quot; name=&quot;fname&quot;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;label for=&quot;tablets&quot;&gt;Number of Tablets&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;number&quot; id=&quot;tablets&quot; name=&quot;tablets&quot;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;label for=&quot;radio&quot;&gt;Medication Frequency: How many times per &lt;b&gt;week&lt;/b&gt; do you take it?&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;everyday&quot; name=&quot;frequency&quot; value=&quot;1&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Daily/everyday&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;everyotherday&quot; name=&quot;frequency&quot; value=&quot;2&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Every other day&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;twice&quot; name=&quot;frequency&quot; value=&quot;3&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Twice per week&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;threetimes&quot; name=&quot;frequency&quot; value=&quot;4&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Three times per week&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;fourtimes&quot; name=&quot;frequency&quot; value=&quot;5&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Four times per week&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;fivetimes&quot; name=&quot;frequency&quot; value=&quot;6&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Five times per week&lt;/label&gt;&lt;br&gt;
+        
+        &lt;div id=&quot;daySelection&quot; style=&quot;display: none;&quot;&gt;
+            &lt;label for=&quot;days&quot;&gt;Select days:&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;sunday&quot; name=&quot;days&quot; value=&quot;Sunday&quot;&gt;
+            &lt;label for=&quot;sunday&quot;&gt;Sunday&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;monday&quot; name=&quot;days&quot; value=&quot;Monday&quot;&gt;
+            &lt;label for=&quot;monday&quot;&gt;Monday&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;tuesday&quot; name=&quot;days&quot; value=&quot;Tuesday&quot;&gt;
+            &lt;label for=&quot;tuesday&quot;&gt;Tuesday&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;wednesday&quot; name=&quot;days&quot; value=&quot;Wednesday&quot;&gt;
+            &lt;label for=&quot;wednesday&quot;&gt;Wednesday&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;thursday&quot; name=&quot;days&quot; value=&quot;Thursday&quot;&gt;
+            &lt;label for=&quot;thursday&quot;&gt;Thursday&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;friday&quot; name=&quot;days&quot; value=&quot;Friday&quot;&gt;
+            &lt;label for=&quot;friday&quot;&gt;Friday&lt;/label&gt;&lt;br&gt;
+            &lt;input type=&quot;checkbox&quot; id=&quot;saturday&quot; name=&quot;days&quot; value=&quot;Saturday&quot;&gt;
+            &lt;label for=&quot;saturday&quot;&gt;Saturday&lt;/label&gt;&lt;br&gt;
+        &lt;/div&gt;
+&lt;script&gt;
+    document.querySelectorAll(&#39;input[name=&quot;frequency&quot;]&#39;).forEach(function(radio) {
+        radio.addEventListener(&#39;change&#39;, function() {
+            if (this.value === &#39;3&#39; || this.value === &#39;4&#39; || this.value === &#39;5&#39; || this.value === &#39;6&#39;) {
+                // If frequency is three, four, or five times per week
+                document.getElementById(&#39;daySelection&#39;).style.display = &#39;block&#39;;
+            } else {
+                document.getElementById(&#39;daySelection&#39;).style.display = &#39;none&#39;;
+            }
+        });
+    });
+&lt;/script&gt;
+
+        &lt;br&gt;
+        &lt;label for=&quot;radio&quot;&gt;Medication Frequency: How many times per &lt;b&gt;day&lt;/b&gt; do you take it?&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;onceday&quot; name=&quot;dayfrequency&quot; value=&quot;onceday&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Once&lt;/label&gt;&lt;br&gt;
+        &lt;input type=&quot;radio&quot; id=&quot;twiceeday&quot; name=&quot;dayfrequency&quot; value=&quot;twiceday&quot;&gt;
+        &lt;label for=&quot;html&quot;&gt;Twice&lt;/label&gt;&lt;br&gt;
+        &lt;br&gt;
+        &lt;button id=&quot;submit&quot;&gt;Submit&lt;/button&gt;&lt;br&gt;&lt;br&gt;
+            &lt;div id=&quot;summarySection&quot; style=&quot;display: none;&quot;&gt;
+        &lt;h3&gt;You're filling:&lt;/h3&gt;
+        &lt;p id=&quot;summary&quot;&gt;&lt;/p&gt;
+    &lt;/div&gt;
+        &lt;button id=&quot;next&quot;&gt;Next Medication&lt;/button&gt;&lt;br&gt;&lt;br&gt;
+    &lt;/div&gt;
+    &lt;!-- Section to display summary --&gt;
 
 
-</code></pre>
+    &lt;!-- The core Firebase JS SDK is always required and must be listed first --&gt;
+    &lt;script src=&quot;https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js&quot;&gt;&lt;/script&gt;
 
+    &lt;!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries --&gt;
+    &lt;script src=&quot;https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js&quot;&gt;&lt;/script&gt;
+
+    &lt;script&gt;
+        // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: &quot;AIzaSyC_vYismxEwVhgX-6Ny0SJw028IpcDhZyg&quot;,
+        authDomain: &quot;smart-pillbox-87589.firebaseapp.com&quot;,
+        databaseURL: &quot;https://smart-pillbox-87589-default-rtdb.firebaseio.com&quot;,
+        projectId: &quot;smart-pillbox-87589&quot;,
+        storageBucket: &quot;smart-pillbox-87589.appspot.com&quot;,
+        messagingSenderId: &quot;146779684231&quot;,
+        appId: &quot;1:146779684231:web:2799f82347dc5cec10e722&quot;,
+        measurementId: &quot;G-4T82GV1Q19&quot;
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a database reference to our blog
+        var ref = firebase.database().ref(&quot;/&quot;);
+
+        // Function to send medication data to Firebase
+        function submit() {
+    var medicationName = document.getElementById(&#39;fname&#39;).value;
+    var weekFrequency = parseInt(document.querySelector(&#39;input[name=&quot;frequency&quot;]:checked&#39;).value);
+    var dayFrequency = document.querySelector(&#39;input[name=&quot;dayfrequency&quot;]:checked&#39;).value;
+    var tabletCount = document.getElementById(&#39;tablets&#39;).value;
+
+    var frequencyText;
+    // Update frequencyText based on weekFrequency value
+    switch (weekFrequency) {
+        case 1:
+            frequencyText = &#39;everyday&#39;; // Change to &#39;daily&#39; if preferred
+            break;
+        case 2:
+            frequencyText = &#39;every other day&#39;;
+            break;
+        case 3:
+            frequencyText = &#39;twice per week&#39;;
+            break;
+        case 4:
+            frequencyText = &#39;three times per week&#39;;
+            break;
+        case 5:
+            frequencyText = &#39;four times per week&#39;;
+            break;
+        case 6:
+            frequencyText = &#39;five times per week&#39;;
+            break;
+        default:
+            frequencyText = weekFrequency + &#39; times per week&#39;;
+    }
+
+    var dayFrequencyText;
+    // Update dayFrequencyText based on dayFrequency value
+    switch (dayFrequency) {
+        case &#39;onceday&#39;:
+            dayFrequencyText = &#39;once&#39;;
+            break;
+        case &#39;twiceday&#39;:
+            dayFrequencyText = &#39;twice&#39;;
+            break;
+        default:
+            dayFrequencyText = dayFrequency;
+    }
+
+    var daysSelected = [];
+    if (weekFrequency &gt;= 3 && weekFrequency &lt;= 6) {
+        // Get the selected days
+        var selectedDays = document.querySelectorAll(&#39;input[name=&quot;days&quot;]&#39;);
+        selectedDays.forEach(function(day) {
+            if (day.checked) {
+                daysSelected.push(day.value);
+            }
+        });
+    }
+
+    var data = {
+        &quot;Medication_Name&quot;: medicationName,
+        &quot;Week_Frequency&quot;: {
+            &quot;value&quot;: weekFrequency,
+            &quot;days&quot;: daysSelected
+        },
+        &quot;Day_Frequency&quot;: dayFrequency,
+        &quot;Turn_Off_LEDs&quot;: false,
+        &quot;Tablet_Count&quot;: tabletCount
+    };
+
+    ref.update(data);
+
+    // Display summary on the same page
+    var summarySentence = medicationName + &quot;, &quot; + frequencyText + &quot;, &quot; + dayFrequencyText + &quot; per day. Put &quot; + tabletCount + &quot; tablets in the lighted compartments, then press Next Medication to move on.&quot;;
+    var summaryHTML = &quot;&lt;h3&gt;&quot; + summarySentence + &quot;&lt;/h3&gt;&quot;;
+    document.getElementById(&#39;summary&#39;).innerHTML = summaryHTML;
+    document.getElementById(&#39;summarySection&#39;).style.display = &#39;block&#39;;
+}
+
+        // Function for next medication
+        function next() {
+            // Clear input fields
+            document.getElementById(&#39;fname&#39;).value = &#39;&#39;; // Medication Name
+            document.getElementById(&#39;tablets&#39;).value = &#39;&#39;; // Tablet Count
+
+            // Clear radio button selections for medication frequency (week)
+            var weekFrequencyRadios = document.querySelectorAll(&#39;input[name=&quot;frequency&quot;]&#39;);
+            weekFrequencyRadios.forEach(function(radio) {
+                radio.checked = false;
+            });
+
+            // Clear radio button selections for medication frequency (day)
+            var dayFrequencyRadios = document.querySelectorAll(&#39;input[name=&quot;dayfrequency&quot;]&#39;);
+            dayFrequencyRadios.forEach(function(radio) {
+                radio.checked = false;
+            });
+
+            // Clear radio button selections for time of day
+            var timeDayRadios = document.querySelectorAll(&#39;input[name=&quot;timeday&quot;]&#39;);
+            timeDayRadios.forEach(function(radio) {
+                radio.checked = false;
+            });
+                // Clear the summary content
+    document.getElementById(&#39;summary&#39;).textContent = &#39;&#39;;
+
+    // Hide summary section
+    document.getElementById(&#39;summarySection&#39;).style.display = &#39;none&#39;;
+
+            // Send signal to Firebase to turn off LEDs
+            ref.update({
+                &quot;Turn_Off_LEDs&quot;: true,
+                &quot;Week_Frequency&quot;: null, // Clear Week_Frequency field in Firebase
+                &quot;Day_Frequency&quot;: null, // Clear Day_Frequency field in Firebase
+                &quot;Medication_Name&quot;: null, // Clear Medication_name field in Firebase
+                &quot;Time_Day&quot;: null // Clear Time_Day field in Firebase
+            });
+
+            // Hide summary section
+            document.getElementById(&#39;summarySection&#39;).style.display = &#39;none&#39;;
+        }
+
+        // Attach event listeners to the buttons
+        document.getElementById(&#39;submit&#39;).addEventListener(&#39;click&#39;, submit, false);
+        document.getElementById(&#39;next&#39;).addEventListener(&#39;click&#39;, next, false);
+
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><br>
 <h4>Assembly</h4><br>
 The box is made of 4 3D printed components.<br>
 <b>The lid</b>:<br>
@@ -56,18 +287,23 @@ The lid has a snapfit lock at the front to close the box, and has hinge componen
   <img src="./middle box.png" alt="cad model of a box lid" width="35%">
 </div>
 
-The box press fits into the base, and has morning and night compartments for each day, which are lablled as insets in the box. Each compartment has a hole where the LED sits.<br>
+The box press fits into the base, and has morning and night compartments for each day, which are labeled as insets in the box. Each compartment has a hole where the LED sits.<br>
 
 <b>The base/slider lid</b>:<br>
-
 <div class="flexrow">
   <img src="./ base.png" alt="cad model of a box lid" width="35%">
-  <img src="./slider.lid" alt="cad model of a box lid" width="35%">
+  <img src="./slider.gif" alt="gif of sliding lid" width="35%">
 </div>
 
-The base press and snap fits into the compartment component, and is an empty space to hold electronic components, with openings under each LED to feed the LED wires into the base. Underneath, it has a slider lid to close the base when wiring is done. 
+The base press and snap fits into the compartment component, and is an empty space to hold electronic components, with openings under each LED to feed the LED wires into the base. Underneath, it has a slider lid to close the base when wiring is done. <br>
+<b>Wiring:</b><br>
+Each LED is connected to an ESP32 pin through its positive leg, and a 100K resisistor through the shorter leg, which goes to ground. Pins 13, 14, 27, 26, 25, 33, 32 are connected to the morning row of LEDs, and pins 15, 4, 18, 19, 21, 22, 23 are connected to the evening row of LEDs (the order of the array corresponds to the day of the week, so 13 is Sunday, 14 is Monday and so on). The LED legs are threaded through the holes in the base, and all the connections are made inside the base enclosure. The system is currently powered with my laptop, with battery integration as a potential next step.<br>
+<div class="flexrow">
+  <img src="./total wiring.jpeg" alt="wiring of circuit within box" width="35%">
+</div>
+<br>
 
-<h4>Read below for updates from throughout the process:</h4><br>
+<h4>Read below for updates from throughout the process, with notes on next steps throughout:</h4><br>
 <h3 style="color:#e2165b";>Part One: Deciding on an idea</h3>
 I decided to go with the Smart Pill Box idea to guide the user when filling their medication organizer. Here's the description from Week One again: <br>
 A lot of smart pillboxes focus on reminding the user when to take their medications. My idea aims to make the other end of medication administration, filling the pillbox, easier. The idea is inspired by a couple of friends and relatives with chronic illnesses whose prescriptions change from month to month, making their medication schedules pretty complicated. 
@@ -352,8 +588,11 @@ Here is the ESP code, which I had some trouble with at first, but switched the c
 
 
 I came back to this code, but undid the class structure and instead used cases for each possible LED option, and updated the html code to 
+<br>
+<br>
 <h5>Future iterations</h5>
-Once I get the code working, I'll add in the capacitive sensors for each compartment (which I'll need to multiplex). The other big step will be to design and 3D print the box with room for the electronics, and integrate power.
+Once I get the code working, I'll add in the capacitive sensors for each compartment (which I'll need to multiplex). The other big step will be to design and 3D print the box with room for the electronics, and integrate power.<br>
+<br>
 
 <h3 style="color:#e2165b";>Part Five: The final (?) product</h3>
 The demo shows my product as it exists at the moment. I did want and try to integrate a feature to sense when pills were added to the box and thus turn the light off for the compartment, but ran out of time to complete it. Here's a summary of that process:<br>
