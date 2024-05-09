@@ -26,7 +26,7 @@
 
 
 <h3>Final Project: Refill Guide Box</h3>
-My final project is a smart pillbox that guides a user through refilling their organizer will multiple medications. See the demo video below!<br>
+My final project is a smart pillbox that guides a user through refilling their organizer will multiple medications. <a href="https://kirafagerstrom.github.io/ps70/13_finalproject/control.html">Here is the interface website</a>. See the demo video below!<br>
 <div class="flexrow">
 <video width="50%" autoplay muted>
   <source src="/Users/kirafagerstrom/Documents/GitHub/ps70/07_outputs/demovid.MOV" type="video/mp4">
@@ -132,8 +132,8 @@ HTML code:
     &lt;script&gt;
         // Your web app's Firebase configuration
     var firebaseConfig = {
-        apiKey: &quot;AIzaSyC_vYismxEwVhgX-6Ny0SJw028IpcDhZyg&quot;,
-        authDomain: &quot;smart-pillbox-87589.firebaseapp.com&quot;,
+        apiKey: &quot;api key&quot;,
+        authDomain: &quot;authdomain&quot;,
         databaseURL: &quot;https://smart-pillbox-87589-default-rtdb.firebaseio.com&quot;,
         projectId: &quot;smart-pillbox-87589&quot;,
         storageBucket: &quot;smart-pillbox-87589.appspot.com&quot;,
@@ -274,7 +274,7 @@ HTML code:
 &lt;/html&gt;
 </code></pre><br>
 <h4>Assembly</h4><br>
-The box is made of 4 3D printed components.<br>
+The box is made of 4 3D printed components. <a href="./final box v6.stl" download>Download the printable file here</a>.<br>
 <b>The lid</b>:<br>
 <div class="flexrow">
   <img src="./lid cad.png" alt="cad model of a box lid" width="35%">
@@ -300,8 +300,10 @@ The base press and snap fits into the compartment component, and is an empty spa
 Each LED is connected to an ESP32 pin through its positive leg, and a 100K resisistor through the shorter leg, which goes to ground. Pins 13, 14, 27, 26, 25, 33, 32 are connected to the morning row of LEDs, and pins 15, 4, 18, 19, 21, 22, 23 are connected to the evening row of LEDs (the order of the array corresponds to the day of the week, so 13 is Sunday, 14 is Monday and so on). The LED legs are threaded through the holes in the base, and all the connections are made inside the base enclosure. The system is currently powered with my laptop, with battery integration as a potential next step.<br>
 <div class="flexrow">
   <img src="./total wiring.jpeg" alt="wiring of circuit within box" width="35%">
+  <img src="./open box.jpeg" alt="open box with LEDs" width="35%" height="35%">
 </div>
 <br>
+<
 
 <h4>Read below for updates from throughout the process, with notes on next steps throughout:</h4><br>
 <h3 style="color:#e2165b";>Part One: Deciding on an idea</h3>
