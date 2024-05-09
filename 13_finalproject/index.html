@@ -33,8 +33,39 @@ My final project is a smart pillbox that guides a user through refilling their o
   </video>
 </div>
 
+<h4>The code</h4><br>
+The final version of the ESP32 code is updated from my last iteration to handle specific days of the week selected by the user, and my updated html code reflects that change.
+<iframe src="https://app.arduino.cc/sketches/f3b4633f-443a-4676-ae7d-b490b6fb9e19?view-mode=embed" style="height:510px;width:100%;margin:10px 0" frameborder=0 /><br>
+HTML code:
+<pre><code>
 
 
+</code></pre>
+
+<h4>Assembly</h4><br>
+The box is made of 4 3D printed components.<br>
+<b>The lid</b>:<br>
+<div class="flexrow">
+  <img src="./lid cad.png" alt="cad model of a box lid" width="35%">
+</div>
+
+The lid has a snapfit lock at the front to close the box, and has hinge components at the back. I used a wire as the pin to connect the lid hinge with the box hinge. 
+
+<b>The box:</b><br>
+<div class="flexrow">
+  <img src="./middle box.png" alt="cad model of a box lid" width="35%">
+</div>
+
+The box press fits into the base, and has morning and night compartments for each day, which are lablled as insets in the box. Each compartment has a hole where the LED sits.<br>
+
+<b>The base/slider lid</b>:<br>
+
+<div class="flexrow">
+  <img src="./ base.png" alt="cad model of a box lid" width="35%">
+  <img src="./slider.lid" alt="cad model of a box lid" width="35%">
+</div>
+
+The base press and snap fits into the compartment component, and is an empty space to hold electronic components, with openings under each LED to feed the LED wires into the base. Underneath, it has a slider lid to close the base when wiring is done. 
 
 <h4>Read below for updates from throughout the process:</h4><br>
 <h3 style="color:#e2165b";>Part One: Deciding on an idea</h3>
